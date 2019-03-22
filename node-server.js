@@ -1,7 +1,14 @@
 const http = require('http')
 const port = 3001
 
+/*
+A better server example can be found at this link:
+https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/
+*/
 const requestHandler = (request, response) => {
+
+	const { headers, method, url } = request;
+
 	// Set CORS headers
 	response.setHeader('Access-Control-Allow-Origin', '*');
 	response.setHeader('Access-Control-Request-Method', '*');
@@ -12,11 +19,34 @@ const requestHandler = (request, response) => {
 		response.end();
 		return;
 	}
-	// console.log(request)
-	// console.log(request.url)
-	response.writeHead(200, {"Content-Type" : "text/plain"})
-	response.write('Hello Node.js Server!')
-	response.end()
+	
+	let body = []
+	request.on('error', (err) => {
+	    console.error(err);
+	}).on('data', (chunk) => {
+		console.log('chunk method: ' + request.method); // Only prints for POST
+		return body.push(chunk);
+	}).on('end', () => {
+		console.log('end method: ' + request.method); // Both GET and POST
+	    body = Buffer.concat(body).toString();
+
+		var json = {};
+		if (request.method === 'POST') {
+			console.log('body 1', body); // body {"firstParam":"yourValue","secondParam":"other value"}
+			json = JSON.parse(body);
+			Object.keys(json).forEach(key => {
+				console.log(key + " => " + json[key]);
+			});
+		}
+	
+		response.writeHead(200, {"Content-Type" : "text/plain"})
+		response.write('Hello method ' + request.method)
+		response.end()
+		return body;
+	});
+
+	console.log('body 2', body);
+
 }
 
 const server = http.createServer(requestHandler)

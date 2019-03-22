@@ -8,6 +8,7 @@ import Toggle  from './components/Toggle';
 import NameForm  from './components/NameForm';
 import Calculator from './components/Calculator';
 import Fetch1 from './components/Fetch1';
+import FetchPost from './components/FetchPost';
 
 const name = 'Leandro S C';
 const element = <h1>Hello, {name}</h1>;
@@ -45,6 +46,7 @@ class App extends Component {
 		<NameForm />
 		<Calculator />
 		<Fetch1 />
+		<FetchPost />
       </div>
     );
   }
